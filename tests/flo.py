@@ -45,14 +45,15 @@ class Flo:
 
         flo = Flo(path)
 
-        game = Game(flo._mock_roller)
+        game = Game(flo._mock_roller())
 
         game.play()
 
         flo._exit()
 
-    def _mock_roller(self, num):
-        return self.rolls.pop(0)
+    def _mock_roller(self):
+        if self.rolls != []:
+            return self.rolls.pop(0)
 
     def _mock_print(self, *args, **kwargs):
 
@@ -91,4 +92,4 @@ class Flo:
 
 
 if __name__ == "__main__":
-    Flo.start("tests/flow/bank_one_roll_then_quit.txt")
+    Flo.test("tests/bank_one_roll_then_quit.txt")

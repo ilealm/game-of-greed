@@ -6,20 +6,19 @@ class GameLogic:
     @staticmethod
     def calculate_score(set_dice):
         score = 0
-            #test socre when you got a straight
+        """testing whether you get 3 pairs"""
         tracker = []
         for i in Counter(set_dice):
             tracker.append(Counter(set_dice)[i])
         if tracker == [2,2,2]:
-            print(tracker)
             score = 1500
             return score
-
+        """check whether you got a straight"""
         if Counter(set_dice) == Counter({1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1}):
             score = 1500
             return score
-
         else:
+            """calculate all other combo for scoring"""
             if Counter(set_dice)[1]:
                 if Counter(set_dice)[1]<=2:
                     addition = 100*Counter(set_dice)[1]
@@ -45,12 +44,7 @@ class GameLogic:
         num_dices_tuple = []
         for i in range(num_dices):
             num_dices_tuple.append(randint(1,6))
-
         return tuple(num_dices_tuple)
-
-
-    def set_aside_dice(self, player, dice):
-        player.dice_deck.append(dice)
 
 
 class Banker:
@@ -66,12 +60,10 @@ class Banker:
     def bank(self):
         self.balance += self.shelved
         self.shelved = 0
-        # clear_shelf()
 
 
     def clear_shelf(self):
         self.shelved = 0
-
 
 
 class Game:
@@ -81,17 +73,20 @@ class Game:
         self.banker = Banker()
         self.round = 1
         self.game = GameLogic()
+        self.roller = roller
 
     def play(self):
+
         def quit():
-            tracker = True
+            """function to print result when user choose to quit"""
             print(f"Total score is {self.banker.balance} points")
             print(f"Thanks for playing. You earned {self.banker.balance} points")
 
-        def cheat_checker(small, big):
-            for i in small:
-                if i in big:
-                    big.remove(i)
+        def cheat_checker(user_input, dice_roll):
+            """checks whether the user is cheating or not"""
+            for i in user_input:
+                if i in dice_roll:
+                    dice_roll.remove(i)
                 else:
                     return False
             return True
@@ -101,12 +96,15 @@ class Game:
         if responses == 'n':
             print("OK. Maybe another time")
         elif responses =='y':
-            tracker = False
-            while tracker is False:
+            """keep the game going unless we break it"""
+            while True:
 
                 print(f"Starting round {self.round}")
                 print(f"Rolling {6-len(self.dice_deck)} dice...")
-                rolls = self.game.roll_dice(6-len(self.dice_deck))
+                if self.roller==None:
+                    rolls = self.game.roll_dice(6-len(self.dice_deck))
+                else:
+                    rolls = self.roller
                 print(",".join([str(i) for i in rolls]))
                 score_check = self.game.calculate_score(rolls)
                 if score_check != 0:
@@ -115,9 +113,12 @@ class Game:
                         dice_check = [int(elem) for elem in list(dice_to_save)]
                         result_check = cheat_checker(dice_check,list(rolls))
                         while result_check == False and dice_check != 'q':
-                            dice_to_save = input("Cheater!!! Or possibly made a typo...")
-                            dice_check = [int(elem) for elem in list(dice_to_save)]
-                            result_check = cheat_checker(dice_check,list(rolls))
+                            print("Cheater!!! Or possibly made a typo...")
+                            print(",".join([str(i) for i in rolls]))
+                            dice_to_save = input("Enter dice to keep (no spaces), or (q)uit: ")
+                            if dice_to_save != 'q':
+                                dice_check = [int(elem) for elem in list(dice_to_save)]
+                                result_check = cheat_checker(dice_check,list(rolls))
                 else:
                     quit()
                     break
@@ -142,6 +143,7 @@ class Game:
                         quit()
                         break
                     elif bank_or_not == 'r':
+                        """keep rolling without banking it"""
                         score_return = self.game.calculate_score(rolls)
                         if score_return != 0:
                             self.round+=1
@@ -150,19 +152,12 @@ class Game:
                             quit()
                             break
                     elif bank_or_not == 'b':
-
+                        """bank the score"""
                         print(f"You banked {self.banker.shelved} points in round {self.round}")
                         self.banker.bank()
 
                         self.round+=1
                         print(f'Total score is {self.banker.balance} points')
-
-        # else:
-        #     while responses != 'y' or responses != 'n':
-        #         input("That's not an answer, please enter again, y or n")
-
-
-
 
 
 if __name__ == "__main__":
