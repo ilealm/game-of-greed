@@ -92,11 +92,14 @@ class Game:
     def greeting(self):
         """ask whether the user want to play the game"""
         print("Welcome to Game of Greed")
-        responses = input("Wanna play?")
-        if responses == 'n':
+        responses = input("Wanna play?").lower()
+        if responses == 'n' or responses == 'no':
             print("OK. Maybe another time")
-        elif responses == 'y':
+        elif responses == 'y' or responses == 'yes':
             self.game_cycle()
+        else:
+            print("Not a good response, please enter either y or n")
+            self.greeting()
 
 
     def show_shelf_score(self,user_choice):
@@ -117,7 +120,6 @@ class Game:
     def game_cycle(self):
 
         while True:
-            self.dice_deck = []
             print(f"Starting round {self.round}")
             print(f"Rolling {6-len(self.dice_deck)} dice...")
             if self.roller==None:
@@ -167,12 +169,13 @@ class Game:
                         print(f'Total score is {self.banker.balance} points')
                         self.round+=1
 
+                    
+
 
     def play(self):
         self.greeting()
 
 
 if __name__ == "__main__":
-    Game()
+    # Game()
     Game().play()
-
