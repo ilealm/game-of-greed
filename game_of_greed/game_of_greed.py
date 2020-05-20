@@ -112,7 +112,7 @@ class Game:
                     if dice_to_save != 'q':
                         dice_check = [int(elem) for elem in list(dice_to_save)]
                         result_check = cheat_checker(dice_check,list(rolls))
-                        while result_check == False and dice_check != 'q':
+                        while result_check == False and dice_to_save != 'q':
                             print("Cheater!!! Or possibly made a typo...")
                             print(",".join([str(i) for i in rolls]))
                             dice_to_save = input("Enter dice to keep (no spaces), or (q)uit: ")
