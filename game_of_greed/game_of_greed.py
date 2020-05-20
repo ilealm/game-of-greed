@@ -111,12 +111,13 @@ class Game:
                 score_check = self.game.calculate_score(rolls)
                 if score_check != 0:
                     dice_to_save = input("Enter dice to keep (no spaces), or (q)uit: ")
-                    dice_check = [int(elem) for elem in list(dice_to_save)]
-                    result_check = cheat_checker(dice_check,list(rolls))
-                    while result_check == False and dice_check != 'q':
-                        dice_to_save = input("Cheater!!! Or possibly made a typo...")
+                    if dice_to_save != 'q':
                         dice_check = [int(elem) for elem in list(dice_to_save)]
                         result_check = cheat_checker(dice_check,list(rolls))
+                        while result_check == False and dice_check != 'q':
+                            dice_to_save = input("Cheater!!! Or possibly made a typo...")
+                            dice_check = [int(elem) for elem in list(dice_to_save)]
+                            result_check = cheat_checker(dice_check,list(rolls))
                 else:
                     quit()
                     break

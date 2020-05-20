@@ -15,4 +15,4 @@ def test_bank_one_roll_then_quit():
     Flo.test('tests/bank_one_roll_then_quit.txt')
 
 def test_cheat_and_fix():
-    Flo.test('tests.cheat_and_fix.txt')
+    Flo.test('tests/cheat_and_fix.txt')
