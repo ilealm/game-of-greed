@@ -45,15 +45,15 @@ class Flo:
 
         flo = Flo(path)
 
-        game = Game(flo._mock_roller())
+        game = Game(flo._mock_roller)
 
         game.play()
 
         flo._exit()
 
-    def _mock_roller(self):
-        if self.rolls != []:
-            return self.rolls.pop(0)
+    def _mock_roller(self,num):
+        # if self.rolls != []:
+        return self.rolls.pop(0)
 
     def _mock_print(self, *args, **kwargs):
 
