@@ -1,4 +1,6 @@
 # Game of Greed labs
+---
+[Click here to view the codes](game_of_greed/game_of_greed.py).
 
 ## Feature Tasks and Requirements
 ### Implementation Notes

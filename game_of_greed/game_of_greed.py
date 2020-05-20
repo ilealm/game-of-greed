@@ -88,6 +88,13 @@ class Game:
             print(f"Total score is {self.banker.balance} points")
             print(f"Thanks for playing. You earned {self.banker.balance} points")
 
+        def cheat_checker(small, big):
+            for i in small:
+                if i in big:
+                    big.remove(i)
+                else:
+                    return False
+            return True
 
         print("Welcome to Game of Greed")
         responses = input("Wanna play?")
@@ -105,11 +112,11 @@ class Game:
                 if score_check != 0:
                     dice_to_save = input("Enter dice to keep (no spaces), or (q)uit: ")
                     dice_check = [int(elem) for elem in list(dice_to_save)]
-                    result_check = all(elem in rolls for elem in dice_check )
-                    while result_check ==False and dice_check is not 'q':
+                    result_check = cheat_checker(dice_check,list(rolls))
+                    while result_check == False and dice_check != 'q':
                         dice_to_save = input("Cheater!!! Or possibly made a typo...")
                         dice_check = [int(elem) for elem in list(dice_to_save)]
-                        print(dice_check)
+                        result_check = cheat_checker(dice_check,list(rolls))
                 else:
                     quit()
                     break
