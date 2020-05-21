@@ -40,6 +40,16 @@
 - Application should keep track of current round
 - Application should have automated tests to ensure proper operation
 
+### 3rd lab:
+
+- Application should implement features from versions 1 and 2
+- Should handle when cheating occurs.
+    - Or just typos.
+    - E.g. roll = `[1,3,5,2]` and user selects 1, 1, 1, 1, 1, 1
+- Should allow user to continue rolling with 6 new dice when all dice have scored in current turn.
+- Handle zilch
+    - No points for round, and round is over
+- Any other questions refer to game doc or the online game or ask.
 
 ## Contributors:
 ___

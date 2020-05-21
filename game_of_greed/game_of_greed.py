@@ -1,6 +1,7 @@
 from random import randint
 from collections import Counter
 
+
 class GameLogic:
 
     @staticmethod
@@ -92,11 +93,14 @@ class Game:
     def greeting(self):
         """ask whether the user want to play the game"""
         print("Welcome to Game of Greed")
-        responses = input("Wanna play?")
-        if responses == 'n':
+        responses = input("Wanna play?").lower()
+        if responses == 'n' or responses == 'no':
             print("OK. Maybe another time")
-        elif responses == 'y':
+        elif responses == 'y' or responses == 'yes':
             self.game_cycle()
+        else:
+            print("Not a good response, please enter either y or n")
+            self.greeting()
 
 
     def show_shelf_score(self,user_choice):
@@ -114,26 +118,51 @@ class Game:
 
         return
 
-    def game_cycle(self):
+    def hot_hand_checker(self, dice_check):
+        """function to check whether user is hitting a hot hand"""
+        score = self.game.calculate_score(dice_check)
+        checker = True
+        for i in dice_check:
+            new_list = dice_check.copy()
+            new_list.remove(i)
+            new_score = self.game.calculate_score(new_list)
+            if new_score == score:
+                checker = False
+        return checker
 
+
+
+    def game_cycle(self):
+        bank_checker = False
         while True:
-            self.dice_deck = []
-            print(f"Starting round {self.round}")
+
+            if bank_checker == False:
+                print(f"Starting round {self.round}")
+
             print(f"Rolling {6-len(self.dice_deck)} dice...")
             if self.roller==None:
                 rolls = self.game.roll_dice(6-len(self.dice_deck))
             else:
                 rolls = self.roller(6-len(self.dice_deck))
+                # rolls = self.roller
             print(",".join([str(i) for i in rolls]))
             score_check = self.game.calculate_score(rolls)
             if score_check == 0:
-                return self.quit_game()
+                print("Zilch!!! Round over")
+                # self.quit_game()
+                print(f"You banked {self.banker.balance} points in round {self.round}")
+                print(f'Total score is {self.banker.balance} points')
+                self.dice_deck = []
+                bank_checker = False
+                self.round+=1
+                continue
             else:
                 dice_to_save = input("Enter dice to keep (no spaces), or (q)uit: ")
                 if dice_to_save == 'q':
                     return self.quit_game()
                 else:
                     dice_check = [int(elem) for elem in list(dice_to_save)]
+## dice_check must be greater than 0 before checking if cheat
                     result_check = self.cheat_checker(dice_check,list(rolls))
                     while result_check == False:
                         print("Cheater!!! Or possibly made a typo...")
@@ -147,7 +176,18 @@ class Game:
 
                     self.show_shelf_score(dice_to_save)
 
+                    actual_score = self.game.calculate_score(rolls)
+
+
+                    hot_hand = self.hot_hand_checker(dice_check)
+                    hot_hand_tracker = False
+                    if len(dice_to_save) == 6:
+                        if hot_hand == True:
+                            self.dice_deck = []
+                            hot_hand_tracker = True
+
                     bank_or_not = input("(r)oll again, (b)ank your points or (q)uit ")
+                    actual_score = self.game.calculate_score(rolls)
 
                     if bank_or_not == 'q':
                         return self.quit_game()
@@ -155,17 +195,25 @@ class Game:
                     elif bank_or_not == 'r':
                         """keep rolling without banking it"""
                         score_return = self.game.calculate_score(rolls)
+                        bank_checker = True
+
                         if score_return != 0:
-                            self.round+=1
+
                             continue
                         else:
                             return self.quit_game()
                     elif bank_or_not == 'b':
                         """bank the score"""
-                        print(f"You banked {self.banker.shelved} points in round {self.round}")
+                        if hot_hand_tracker == True:
+                            print(f"You banked {self.banker.shelved} points in round {self.round+1}")
+                        else:
+                            print(f"You banked {self.banker.shelved} points in round {self.round}")
                         self.banker.bank()
                         print(f'Total score is {self.banker.balance} points')
                         self.round+=1
+                        self.dice_deck = []
+                        bank_checker = False
+
 
 
     def play(self):
@@ -173,6 +221,5 @@ class Game:
 
 
 if __name__ == "__main__":
-    Game()
+    # Game()
     Game().play()
-
