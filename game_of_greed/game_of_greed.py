@@ -117,6 +117,11 @@ class Game:
 
         return
 
+
+    # def soft_reset(self):
+    #     self.dice_deck = []
+    #     # self.round = 1
+
     def game_cycle(self):
 
         while True:
@@ -129,6 +134,7 @@ class Game:
             print(",".join([str(i) for i in rolls]))
             score_check = self.game.calculate_score(rolls)
             if score_check == 0:
+            """ zielch """
                 return self.quit_game()
             else:
                 dice_to_save = input("Enter dice to keep (no spaces), or (q)uit: ")
@@ -136,6 +142,7 @@ class Game:
                     return self.quit_game()
                 else:
                     dice_check = [int(elem) for elem in list(dice_to_save)]
+## dice_check must be greater than 0 before checking if cheat
                     result_check = self.cheat_checker(dice_check,list(rolls))
                     while result_check == False:
                         print("Cheater!!! Or possibly made a typo...")
@@ -149,7 +156,15 @@ class Game:
 
                     self.show_shelf_score(dice_to_save)
 
+                    actual_score = self.game.calculate_score(rolls)
+
+
+
+                    if len(self.dice_deck) == 6 and actual_score > 0:
+                        self.dice_deck = []
+
                     bank_or_not = input("(r)oll again, (b)ank your points or (q)uit ")
+                    actual_score = self.game.calculate_score(rolls)
 
                     if bank_or_not == 'q':
                         return self.quit_game()
@@ -168,8 +183,11 @@ class Game:
                         self.banker.bank()
                         print(f'Total score is {self.banker.balance} points')
                         self.round+=1
+                        self.dice_deck = []
 
-                    
+
+
+
 
 
     def play(self):
