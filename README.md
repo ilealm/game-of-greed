@@ -51,6 +51,19 @@
     - No points for round, and round is over
 - Any other questions refer to game doc or the online game or ask.
 
+
+### 4th lab
+- Create an AI Bot to play Game of Greed
+    - The only method available for use from Game class is **play**.
+    - All static methods of **GameLogic** class are available.
+All other interactions with game can take place ONLY via the I/O features of the game.
+        - In other words, via injectable **print** and **input** functionality.
+        - It is FORBIDDEN to inject a custom **roller** function into Game class.
+- Your Bot class should be added to **player_bot.py** file with name of your choosing.
+- User should be able to see your bot play by executing **player_bot.py** from terminal.
+- Application should implement features from previous classes
+
+
 ## Contributors:
 ___
 Iris, Chen, Jesse and Corey D.
