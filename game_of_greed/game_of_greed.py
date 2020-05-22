@@ -48,6 +48,25 @@ class GameLogic:
         return tuple(num_dices_tuple)
 
 
+    @staticmethod
+    def get_scorers(dice):
+        all_dice_score = GameLogic.calculate_score(dice)
+
+        if all_dice_score == 0:
+            return tuple()
+
+        scorers = []
+
+        for i in range(len(dice)):
+            sub_roll = dice[:i] + dice[i + 1 :]
+            sub_score = GameLogic.calculate_score(sub_roll)
+
+            if sub_score != all_dice_score:
+                scorers.append(dice[i])
+
+        return tuple(scorers)
+
+
 class Banker:
     def __init__(self):
         self.balance = 0
@@ -134,7 +153,7 @@ class Game:
 
     def game_cycle(self):
         bank_checker = False
-        while True:
+        while self.round <= 20:
 
             if bank_checker == False:
                 print(f"Starting round {self.round}")
@@ -145,7 +164,8 @@ class Game:
             else:
                 rolls = self.roller(6-len(self.dice_deck))
                 # rolls = self.roller
-            print(",".join([str(i) for i in rolls]))
+            if len(rolls) != 0:
+                print(",".join([str(i) for i in rolls]))
             score_check = self.game.calculate_score(rolls)
             if score_check == 0:
                 print("Zilch!!! Round over")
@@ -155,14 +175,15 @@ class Game:
                 self.dice_deck = []
                 bank_checker = False
                 self.round+=1
+                self.banker.clear_shelf()
                 continue
             else:
-                dice_to_save = input("Enter dice to keep (no spaces), or (q)uit: ")
+                dice_to_save = input("Enter dice to keep (no spaces), or (q)uit:")
                 if dice_to_save == 'q':
                     return self.quit_game()
                 else:
                     dice_check = [int(elem) for elem in list(dice_to_save)]
-## dice_check must be greater than 0 before checking if cheat
+                    ## dice_check must be greater than 0 before checking if cheat
                     result_check = self.cheat_checker(dice_check,list(rolls))
                     while result_check == False:
                         print("Cheater!!! Or possibly made a typo...")
@@ -181,7 +202,7 @@ class Game:
 
                     hot_hand = self.hot_hand_checker(dice_check)
                     hot_hand_tracker = False
-                    if len(dice_to_save) == 6:
+                    if len(dice_to_save) == len(rolls):
                         if hot_hand == True:
                             self.dice_deck = []
                             hot_hand_tracker = True
@@ -197,11 +218,12 @@ class Game:
                         score_return = self.game.calculate_score(rolls)
                         bank_checker = True
 
-                        if score_return != 0:
+                        if score_return != 0 and len(self.dice_deck) != 6:
 
                             continue
                         else:
-                            return self.quit_game()
+                            self.quit_game()
+                            continue
                     elif bank_or_not == 'b':
                         """bank the score"""
                         if hot_hand_tracker == True:
@@ -214,7 +236,7 @@ class Game:
                         self.dice_deck = []
                         bank_checker = False
 
-
+        self.quit_game()
 
     def play(self):
         self.greeting()
